@@ -76,8 +76,25 @@
         </div>
     </nav>
 
+    <!-- GLOBAL LOADING/ERROR OVERLAY -->
+    <div id="global-state-overlay" class="fixed inset-0 z-[100] bg-white flex flex-col items-center justify-center transition-opacity duration-500">
+        <!-- Loading State -->
+        <div id="loading-state" class="flex flex-col items-center">
+            <div class="w-12 h-12 border-4 border-brand-100 border-t-brand-500 rounded-full animate-spin"></div>
+            <span class="mt-4 text-xs font-mono text-slate-500 uppercase tracking-widest">Carregando Dados...</span>
+        </div>
+
+        <!-- Error State -->
+        <div id="error-state" class="hidden flex-col items-center text-center max-w-sm px-4">
+            <i class="fa-solid fa-triangle-exclamation text-4xl text-rose-500 mb-4"></i>
+            <h3 class="text-lg font-bold text-slate-900 mb-2">Erro de Conexão</h3>
+            <p class="text-sm text-slate-600 mb-6" id="error-message">Não foi possível carregar os dados dos projetos.</p>
+            <button onclick="location.reload()" class="px-6 py-2 bg-brand-500 text-white rounded-lg font-bold text-sm hover:bg-brand-600 transition-colors">Tentar Novamente</button>
+        </div>
+    </div>
+
     <!-- LANDING VIEW (Project Selection) -->
-    <main id="view-landing" class="relative z-10 flex-grow pt-32 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full flex flex-col items-center justify-center min-h-[80vh] view-transition">
+    <main id="view-landing" class="relative z-10 flex-grow pt-32 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full flex flex-col items-center justify-center min-h-[80vh] view-transition hidden">
         <header class="text-center mb-16 animate-fade-in-up">
             <div class="inline-flex items-center justify-center px-4 py-1.5 mb-6 rounded-full border border-brand-500/30 bg-brand-50 text-brand-600 text-xs font-semibold tracking-wide uppercase shadow-sm">
                 <span class="w-2 h-2 rounded-full bg-brand-500 mr-2 animate-pulse"></span>
@@ -192,6 +209,12 @@
                 </div>
             </div>
 
+            <!-- Search Bar for SOP -->
+            <div class="mb-4 relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <input type="text" id="sop-search" oninput="filterList('sop-list', this.value)" placeholder="Search SOPs..." class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all text-sm text-slate-700">
+            </div>
+
             <div class="glass-card rounded-2xl p-4 overflow-hidden">
                 <div class="max-h-[600px] overflow-y-auto custom-scrollbar pr-2" id="sop-list">
                     <!-- SOP list items will be injected here -->
@@ -209,6 +232,12 @@
                     </h2>
                     <p class="text-slate-500 text-sm mt-1">Access special studies and documentation.</p>
                 </div>
+            </div>
+
+            <!-- Search Bar for Studies -->
+            <div class="mb-4 relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <input type="text" id="studies-search" oninput="filterList('studies-list', this.value)" placeholder="Search studies..." class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all text-sm text-slate-700">
             </div>
 
             <div class="glass-card rounded-2xl p-4 overflow-hidden">

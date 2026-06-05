@@ -2,12 +2,38 @@ let allData = [];
 let currentProject = null;
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Show loading overlay
+    const overlay = document.getElementById('global-state-overlay');
+    const loadingState = document.getElementById('loading-state');
+    const errorState = document.getElementById('error-state');
+    const landingView = document.getElementById('view-landing');
+
     fetch('links.json')
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.json();
+        })
         .then(data => {
             allData = data;
+
+            // Hide loading, show landing
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                landingView.classList.remove('hidden');
+            }, 500);
         })
-        .catch(error => console.error('Error loading links:', error));
+        .catch(error => {
+            console.error('Error loading links:', error);
+
+            // Show error state
+            loadingState.classList.add('hidden');
+            errorState.classList.remove('hidden');
+            errorState.classList.add('flex');
+
+            const errorMsg = document.getElementById('error-message');
+            if(errorMsg) errorMsg.innerText = `Erro: ${error.message}`;
+        });
 });
 
 function returnToLanding() {
@@ -101,6 +127,10 @@ function renderListSection(dataKey, project, containerId) {
             const el = document.createElement('div');
             el.className = 'drill-down-item p-4 border-b border-slate-100 last:border-b-0 cursor-pointer flex items-center justify-between group';
 
+            // Add custom data attribute for searching
+            const searchText = `${item.title} ${item.description || ''}`.toLowerCase();
+            el.dataset.search = searchText;
+
             const url = item.projects[project].url || '#';
 
             el.onclick = () => window.open(url, '_blank');
@@ -129,6 +159,23 @@ function renderListSection(dataKey, project, containerId) {
             </div>
         `;
     }
+}
+
+function filterList(containerId, query) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    const items = container.querySelectorAll('.drill-down-item');
+    const lowerQuery = query.toLowerCase().trim();
+
+    items.forEach(item => {
+        const searchableText = item.dataset.search || '';
+        if (searchableText.includes(lowerQuery)) {
+            item.style.display = '';
+        } else {
+            item.style.display = 'none';
+        }
+    });
 }
 
 function createTopsideCard(item, project) {
